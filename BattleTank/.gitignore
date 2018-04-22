@@ -54,6 +54,9 @@ Binaries/*
 # Builds
 Build/*
 
+# Asset standard UE
+Content/StarterContent/*
+
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
 Build/*/**
