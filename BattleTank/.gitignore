@@ -53,6 +53,7 @@ Binaries/*
 
 # Builds
 Build/*
+WindowsNoEditor/*
 
 # Asset standard UE
 Content/StarterContent/*
