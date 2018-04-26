@@ -5,20 +5,19 @@
 #include "CoreMinimal.h"
 #include "Runtime/Engine/Classes/GameFramework/Actor.h"
 #include "Tank.h"
-#include "GameFramework/PlayerController.h"
-#include "TankPlayerController.generated.h"
+#include "AIController.h"
+#include "TankAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BATTLETANK_API ATankPlayerController : public APlayerController
+class BATTLETANK_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 	
-	
 public:
-	ATank* GetTank() const;
+	ATank * GetTank() const;
 
 	void BeginPlay() override;
 };
