@@ -9,9 +9,9 @@ ATank::ATank()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Création du système de visée
+	TankAimingCmpt = CreateDefaultSubobject<UTankAimingComponent>(FName("AimingComponent"));
 }
-
-
 
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
@@ -29,10 +29,15 @@ void ATank::Tick(float DeltaTime)
 
 void ATank::AimedAt(FVector pHitLocation)
 {
+	TankAimingCmpt->AimedAt(pHitLocation);
 }
 
 void ATank::AimedAt(ATank* pTarget)
 {
+	if (pTarget)
+	{
+		TankAimingCmpt->AimedAt(pTarget->GetTargetLocation());
+	}
 }
 
 // Called to bind functionality to input
