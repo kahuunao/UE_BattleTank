@@ -20,7 +20,7 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 public:
 	
 	// Called when the game starts or when spawned
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

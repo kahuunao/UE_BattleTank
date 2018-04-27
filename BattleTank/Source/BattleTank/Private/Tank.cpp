@@ -11,6 +11,8 @@ ATank::ATank()
 
 }
 
+
+
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
 {
@@ -23,6 +25,14 @@ void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATank::AimedAt(FVector pHitLocation)
+{
+}
+
+void ATank::AimedAt(ATank* pTarget)
+{
 }
 
 // Called to bind functionality to input

@@ -3,6 +3,41 @@
 #include "TankAIController.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 
+void ATankAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	ATank* MyTank = GetTank();
+	if (MyTank)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AI control %s"), *MyTank->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Tank pawn controlled by an AI"));
+	}
+
+	ATank* playerTank = GetPlayerTank();
+	if (playerTank)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player found"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player not found"));
+	}
+}
+
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	ATank* playerTank = GetPlayerTank();
+	if (playerTank)
+	{
+		GetTank()->AimedAt(playerTank);
+	}
+}
 
 ATank* ATankAIController::GetTank() const
 {
@@ -19,28 +54,3 @@ ATank * ATankAIController::GetPlayerTank() const
 	}
 	return tank;
 }
-
-void ATankAIController::BeginPlay()
-{
-	Super::BeginPlay();
-	ATank* MyTank = GetTank();
-	if (MyTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AI control %s"), *MyTank->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Tank pawn controlled by an AI"));
-	}
-
-	ATank* playerTank = GetPlayerTank();
-	if (MyTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player found"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player not found"));
-	}
-}
-
