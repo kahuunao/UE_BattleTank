@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -31,24 +32,50 @@ void ATankPlayerController::AimTowardsCrosshair()
 		return;
 	}
 
-
 	FVector aimingPosition;
-	UE_LOG(LogTemp, Warning, TEXT("AimingPosition before %s"), *aimingPosition.ToString());
-	GetSightRayHitLocation(aimingPosition);
-	UE_LOG(LogTemp, Warning, TEXT("AimingPosition after %s"), *aimingPosition.ToString());
+	if (GetSightRayHitLocation(aimingPosition))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SihtRayHitLocation %s"), *aimingPosition.ToString());
+	}
 }
 
-bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocaltion) const
+bool ATankPlayerController::GetSightRayHitLocation(FVector &OutHitLocation) const
 {
-	OutHitLocaltion.X = 10;
-	OutHitLocaltion.Y = 10;
-	OutHitLocaltion.Z = 10;
-
+	// Get crosshair screen location
 	int32 screenWidth;
 	int32 screenHeight;
 	GetViewportSize(screenWidth, screenHeight);
-
 	FVector2D crosshairLocation = FVector2D(screenWidth * CrosshairXLocation, screenHeight* CrosshairYLocation);
-
-	return true;
+	
+	// Get crosshair world position
+	FVector worldDirection;
+	if (GetLookDirection(crosshairLocation, worldDirection))
+	{
+		return GetLookLocation(worldDirection, OutHitLocation);
+	}
+	OutHitLocation = FVector::ZeroVector;
+	return false;
 }
+
+bool ATankPlayerController::GetLookDirection(FVector2D &pScreenPosition, FVector &OutWorldDirection) const
+{
+	FVector cameraWorldLocation;
+	return DeprojectScreenPositionToWorld(pScreenPosition.X, pScreenPosition.Y, cameraWorldLocation, OutWorldDirection);
+}
+
+bool ATankPlayerController::GetLookLocation(FVector &pLookDirection, FVector &OutHitLocation) const
+{
+	FVector start = PlayerCameraManager->GetCameraLocation();
+	FVector end = start + pLookDirection * LineTraceRange;
+
+	FHitResult hit;
+	if (GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_Visibility))
+	{
+		OutHitLocation = hit.Location;
+		return true;
+	}
+	OutHitLocation = FVector::ZeroVector;
+	return false;
+}
+
+
