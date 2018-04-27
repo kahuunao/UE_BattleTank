@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "GameFramework/Actor.h"
 #include "TankAimingComponent.h"
+#include "GameFramework/Actor.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Components/StaticMeshComponent.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -31,10 +33,31 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimedAt(FVector pHitLocation)
+void UTankAimingComponent::AimedAt(FVector pHitLocation, float pLaunchSpeed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s aiming from %s at %s"), *GetOwner()->GetName(), *Barrel->GetComponentLocation().ToString(), *pHitLocation.ToString());
-}
+	if (!Barrel)
+	{
+		return;
+	}
+
+	//UE_LOG(LogTemp, Warning, TEXT("%s aiming from %s at %s"), *GetOwner()->GetName(), *Barrel->GetComponentLocation().ToString(), *pHitLocation.ToString());
+
+	FVector outLaunchVelocity;
+	FVector startLocation = Barrel->GetSocketLocation(FName("ProjectibleOutput"));
+	if (UGameplayStatics::SuggestProjectileVelocity(
+		GetWorld(), 
+		outLaunchVelocity, 
+		startLocation, 
+		pHitLocation, 
+		pLaunchSpeed,
+		false,
+		0.0f,
+		0.0f,
+		ESuggestProjVelocityTraceOption::DoNotTrace))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s aiming to %s"), *GetOwner()->GetName(), *outLaunchVelocity.GetSafeNormal().ToString());
+	}
+} 
 
 void UTankAimingComponent::SetBarrel(UStaticMeshComponent* pBarrel)
 {

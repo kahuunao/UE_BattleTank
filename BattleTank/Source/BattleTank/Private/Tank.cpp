@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
+#include "TankAimingComponent.h"
 
 
 // Sets default values
@@ -29,14 +30,14 @@ void ATank::Tick(float DeltaTime)
 
 void ATank::AimedAt(FVector pHitLocation)
 {
-	TankAimingCmpt->AimedAt(pHitLocation);
+	TankAimingCmpt->AimedAt(pHitLocation, LaunchSpeed);
 }
 
 void ATank::AimedAt(ATank* pTarget)
 {
 	if (pTarget)
 	{
-		TankAimingCmpt->AimedAt(pTarget->GetTargetLocation());
+		TankAimingCmpt->AimedAt(pTarget->GetTargetLocation(), LaunchSpeed);
 	}
 }
 
